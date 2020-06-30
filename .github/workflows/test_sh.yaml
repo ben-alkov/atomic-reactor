@@ -38,19 +38,12 @@ jobs:
           ENGINE: ${{ matrix.os.engine }}
         run: ./test.sh
 
-      - name: Coveralls Python parallel
-        uses: AndreMiras/coveralls-python-action@master
-        with:
-          parallel: true
-
-  coveralls_finish:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Coveralls Python finish
-        uses: AndreMiras/coveralls-python-action@master
-        with:
-          parallel-finished: true
+      - name: coveralls-python parallel
+        uses: ben-alkov/actions/coveralls-python@coveralls-python
+        env:
+          COVERALLS_FLAG_NAME: ${{ matrix.os.name }}-${{ matrix.os.version }}-Py-${{ matrix.os.python }}
+          COVERALLS_PARALLEL: true
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
 
   pylint:
     name: Pylint analyzer for Python ${{ matrix.os.python }}
