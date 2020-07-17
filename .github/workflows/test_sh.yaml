@@ -38,19 +38,24 @@ jobs:
           ENGINE: ${{ matrix.os.engine }}
         run: ./test.sh
 
-      - name: Coveralls Python parallel
-        uses: AndreMiras/coveralls-python-action@master
+      - name: Upload coverage.py data
+        uses: actions/upload-artifact@v2
         with:
-          parallel: true
+          path: .coverage
+          name: .coverage.${{ matrix.os.name }}_${{ matrix.os.version }}.python${{ matrix.os.python }}
 
-  coveralls_finish:
+  coverage_py:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - name: Coveralls Python finish
-        uses: AndreMiras/coveralls-python-action@master
-        with:
-          parallel-finished: true
+      - name: Check out repo
+        uses: actions/checkout@v2
+
+      - name: Download all coverage.py data
+        uses: actions/download-artifact@v2
+
+      - name: Run Coverage.py report
+        uses: ben-alkov/actions/coverage-py@coverage-py
 
   pylint:
     name: Pylint analyzer for Python ${{ matrix.os.python }}
