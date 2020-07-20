@@ -38,24 +38,12 @@ jobs:
           ENGINE: ${{ matrix.os.engine }}
         run: ./test.sh
 
-      - name: Upload coverage.py data
-        uses: actions/upload-artifact@v2
+      - name: Publish code coverage
+        uses: paambaati/codeclimate-action@v2.6.0
+        env:
+          CC_TEST_REPORTER_ID: efca5ea053f972191fff2c76b63eb45abd1b88f23e42fcabb7bb4cd83da8c594
         with:
-          path: .coverage
-          name: .coverage.${{ matrix.os.name }}_${{ matrix.os.version }}.python${{ matrix.os.python }}
-
-  coverage_py:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repo
-        uses: actions/checkout@v2
-
-      - name: Download all coverage.py data
-        uses: actions/download-artifact@v2
-
-      - name: Run Coverage.py report
-        uses: ben-alkov/actions/coverage-py@coverage-py
+          coverageCommand: test 0
 
   pylint:
     name: Pylint analyzer for Python ${{ matrix.os.python }}
