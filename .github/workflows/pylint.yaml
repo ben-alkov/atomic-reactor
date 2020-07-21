@@ -11,12 +11,12 @@ jobs:
       matrix:
         os:
           - name: fedora
-            version: 29
+            version: 31
             python: 2
             engine: docker
 
           - name: fedora
-            version: 31
+            version: 32
             python: 3
             engine: docker
 
