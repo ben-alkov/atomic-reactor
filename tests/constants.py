@@ -31,7 +31,7 @@ DOCKERFILE_ERROR_BUILD_PATH = os.path.join(FILES, 'docker-hello-world-error-buil
 SOURCE_CONFIG_ERROR_PATH = os.path.join(FILES, 'docker-hello-world-error-config')
 DOCKERFILE_SUBDIR_PATH = os.path.join(FILES, 'df-in-subdir')
 
-FLATPAK_GIT = "git://pkgs.fedoraproject.org/modules/eog.git"
+
 FLATPAK_SHA1 = "603bb298c8fb60936590e159b7a6387d6e090a09"
 
 SOURCE = {
