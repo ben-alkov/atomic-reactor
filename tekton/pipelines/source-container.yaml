@@ -21,7 +21,7 @@ spec:
   tasks:
     - name: build-source-container
       taskRef:
-        name: build-source-container-0-1
+        name: build-slice-container-0-1
       workspaces:
       - name: ws-build-dir
         workspace: ws-build-dir
