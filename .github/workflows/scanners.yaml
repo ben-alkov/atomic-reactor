@@ -1,0 +1,40 @@
+name: Scanners
+
+on:
+  pull_request:
+
+  push:
+    branches:
+      - master
+      - release_*
+
+jobs:
+  KICS:
+    name: KICS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v2
+
+      - name: Create results dir
+        run: mkdir -p results-dir
+
+      - name: Run KICS Scan
+        uses: checkmarx/kics-action@v1.4
+        with:
+          path: ./
+          exclude_paths: ./tests/files/*
+          type: 'Ansible, Dockerfile, Kubernetes'
+          output_formats: sarif
+          output_path: results-dir/
+          ignore_on_exit: results
+
+      - name: Display results
+        run: |
+          cat results-dir/results.sarif
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: results-dir/results.sarif
