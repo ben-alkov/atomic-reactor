@@ -146,9 +146,9 @@ semantic-version==2.10.0 \
     # via
     #   -r requirements-build.in
     #   setuptools-rust
-setuptools-rust==1.6.0 \
-    --hash=sha256:c86e734deac330597998bfbc08da45187e6b27837e23bd91eadb320732392262 \
-    --hash=sha256:e28ae09fb7167c44ab34434eb49279307d611547cb56cb9789955cdb54a1aed9
+setuptools-rust==1.10.2 \
+    --hash=sha256:4b39c435ae9670315d522ed08fa0e8cb29f2a6048033966b6be2571a90ce4f1c \
+    --hash=sha256:5d73e7eee5f87a6417285b617c97088a7c20d1a70fcea60e3bdc94ff567c29dc
     # via -r requirements-build.in
 setuptools-scm[toml]==7.1.0 \
     --hash=sha256:6c508345a771aad7d56ebff0e70628bf2b0ec7573762be9960214730de278f27 \
@@ -163,9 +163,7 @@ tomli==1.0.1 \
 typing-extensions==4.0.1 \
     --hash=sha256:4ca091dea149f945ec56afb48dae714f21e8692ef22a395223bcd328961b6a0e \
     --hash=sha256:7f001e5ac290a0c0401508864c7ec868be4e701886d5b573a9528ed3973d9d3b
-    # via
-    #   setuptools-rust
-    #   setuptools-scm
+    # via setuptools-scm
 wheel==0.40.0 \
     --hash=sha256:cd1196f3faee2b31968d626e1731c94f99cbdb67cf5a46e4f5656cbee7738873 \
     --hash=sha256:d236b20e7cb522daf2390fa84c55eea81c5c30190f90f29ae2ca1ad8355bf247
