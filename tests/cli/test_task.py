@@ -28,7 +28,7 @@ TASK_ARGS = {
     "config_file": "reactor-config-map.yaml",
     "user_params": '{"some_param": "some_value"}',
 }
-PRE_TASK_ARGS = {
+INIT_TASK_ARGS = {
     **TASK_ARGS,
     "platforms_result": 'platform_result',
 }
@@ -60,9 +60,29 @@ def test_source_build():
     assert task.source_container_build(TASK_ARGS) == TASK_RESULT
 
 
+def test_binary_container_init():
+    mock(binary.BinaryInitTask, task_args=INIT_TASK_ARGS)
+    assert task.binary_container_init(INIT_TASK_ARGS) == TASK_RESULT
+
+
+def test_binary_container_cachito():
+    mock(binary.BinaryCachitoTask, task_args=TASK_ARGS)
+    assert task.binary_container_cachito(TASK_ARGS) == TASK_RESULT
+
+
+def test_binary_container_cachi2_init():
+    mock(binary.BinaryCachi2InitTask, task_args=TASK_ARGS)
+    assert task.binary_container_cachi2_init(TASK_ARGS) == TASK_RESULT
+
+
+def test_binary_container_cachi2_postprocess():
+    mock(binary.BinaryCachi2PostprocessTask, task_args=TASK_ARGS)
+    assert task.binary_container_cachi2_postprocess(TASK_ARGS) == TASK_RESULT
+
+
 def test_binary_container_prebuild():
-    mock(binary.BinaryPreBuildTask, task_args=PRE_TASK_ARGS)
-    assert task.binary_container_prebuild(PRE_TASK_ARGS) == TASK_RESULT
+    mock(binary.BinaryPreBuildTask, task_args=TASK_ARGS)
+    assert task.binary_container_prebuild(TASK_ARGS) == TASK_RESULT
 
 
 def test_binary_container_build():

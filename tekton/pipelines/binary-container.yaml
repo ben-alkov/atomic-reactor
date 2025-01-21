@@ -1,11 +1,14 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: binary-container-0-1  # dot is not allowed in the name
+  name: binary-container-0-2  # dot is not allowed in the name
 spec:
   params:
     - name: osbs-image
       description: The location of the OSBS builder image (FQDN pullspec)
+      type: string
+    - name: cachi2-image
+      description: The location of the Cachi2 image (FQDN pullspec)
       type: string
     - name: user-params
       type: string
@@ -34,7 +37,7 @@ spec:
     - name: task_build_result_aarch64
       value: $(tasks.binary-container-build-aarch64.results.task_result)
     - name: platforms_result
-      value: $(tasks.binary-container-prebuild.results.platforms_result)
+      value: $(tasks.binary-container-init.results.platforms_result)
     - name: annotations
       value: $(finally.binary-container-exit.results.annotations)
 
@@ -66,11 +69,143 @@ spec:
           value: '$(params.user-params)'
       timeout: "0"
 
-    - name: binary-container-prebuild
+    - name: binary-container-init
       runAfter:
         - clone
       taskRef:
-        name: binary-container-prebuild-0-1
+        resolver: git
+        params:
+        - name: url
+          value: https://github.com/containerbuildsystem/atomic-reactor.git
+        - name: revision
+          value: feature_cachi2
+        - name: pathInRepo
+          value: tekton/tasks/binary-container-init.yaml
+      workspaces:
+        - name: ws-build-dir
+          workspace: ws-container
+          subPath: build-dir
+        - name: ws-context-dir
+          workspace: ws-container
+          subPath: context-dir
+        - name: ws-home-dir
+          workspace: ws-home-dir
+        - name: ws-registries-secret
+          workspace: ws-registries-secret
+        - name: ws-koji-secret
+          workspace: ws-koji-secret
+        - name: ws-reactor-config-map
+          workspace: ws-reactor-config-map
+        - name: ws-autobot-keytab
+          workspace: ws-autobot-keytab
+      params:
+        - name: osbs-image
+          value: "$(params.osbs-image)"
+        - name: pipeline-run-name
+          value: "$(context.pipelineRun.name)"
+        - name: user-params
+          value: '$(params.user-params)'
+      timeout: "0"
+
+    - name: binary-container-cachito
+      runAfter:
+        - binary-container-init
+      taskRef:
+        resolver: git
+        params:
+        - name: url
+          value: https://github.com/containerbuildsystem/atomic-reactor.git
+        - name: revision
+          value: feature_cachi2
+        - name: pathInRepo
+          value: tekton/tasks/binary-container-cachito.yaml
+      workspaces:
+        - name: ws-build-dir
+          workspace: ws-container
+          subPath: build-dir
+        - name: ws-context-dir
+          workspace: ws-container
+          subPath: context-dir
+        - name: ws-home-dir
+          workspace: ws-home-dir
+        - name: ws-registries-secret
+          workspace: ws-registries-secret
+        - name: ws-koji-secret
+          workspace: ws-koji-secret
+        - name: ws-reactor-config-map
+          workspace: ws-reactor-config-map
+        - name: ws-autobot-keytab
+          workspace: ws-autobot-keytab
+      params:
+        - name: osbs-image
+          value: "$(params.osbs-image)"
+        - name: pipeline-run-name
+          value: "$(context.pipelineRun.name)"
+        - name: user-params
+          value: '$(params.user-params)'
+      when:
+        - input: "$(tasks.binary-container-init.results.remote_sources_version_result)"
+          operator: in
+          values: ["1"]
+      timeout: "0"
+
+    - name: binary-container-cachi2
+      runAfter:
+        - binary-container-init
+      taskRef:
+        resolver: git
+        params:
+        - name: url
+          value: https://github.com/containerbuildsystem/atomic-reactor.git
+        - name: revision
+          value: feature_cachi2
+        - name: pathInRepo
+          value: tekton/tasks/binary-container-cachi2.yaml
+      workspaces:
+        - name: ws-build-dir
+          workspace: ws-container
+          subPath: build-dir
+        - name: ws-context-dir
+          workspace: ws-container
+          subPath: context-dir
+        - name: ws-home-dir
+          workspace: ws-home-dir
+        - name: ws-registries-secret
+          workspace: ws-registries-secret
+        - name: ws-koji-secret
+          workspace: ws-koji-secret
+        - name: ws-reactor-config-map
+          workspace: ws-reactor-config-map
+        - name: ws-autobot-keytab
+          workspace: ws-autobot-keytab
+      params:
+        - name: osbs-image
+          value: "$(params.osbs-image)"
+        - name: cachi2-image
+          value: "$(params.cachi2-image)"
+        - name: pipeline-run-name
+          value: "$(context.pipelineRun.name)"
+        - name: user-params
+          value: '$(params.user-params)'
+      when:
+        - input: "$(tasks.binary-container-init.results.remote_sources_version_result)"
+          operator: in
+          values: ["2"]
+      timeout: "0"
+
+    - name: binary-container-prebuild
+      runAfter:
+        - binary-container-cachito
+        - binary-container-cachi2
+      taskRef:
+        resolver: git
+        params:
+        - name: url
+          value: https://github.com/containerbuildsystem/atomic-reactor.git
+        - name: revision
+          value: feature_cachi2
+        - name: pathInRepo
+          value: tekton/tasks/binary-container-prebuild.yaml
       workspaces:
         - name: ws-build-dir
           workspace: ws-container

@@ -78,14 +78,45 @@ def parse_args(args: Optional[Sequence[str]] = None) -> dict:
     )
     clone.set_defaults(func=task.clone)
 
+    binary_container_init = tasks.add_parser(
+        "binary-container-init",
+        help="binary container pre-build step",
+        description="Execute binary container pre-build steps.",
+    )
+    binary_container_init.set_defaults(func=task.binary_container_init)
+    binary_container_init.add_argument("--platforms-result", metavar="FILE", default=None,
+                                       help="file to write final platforms result")
+    binary_container_init.add_argument("--remote-sources-version-result", metavar="FILE",
+                                       default=None,
+                                       help="file to write final remote-sources version result")
+
+    binary_container_cachito = tasks.add_parser(
+        "binary-container-cachito",
+        help="binary container cachito step",
+        description="Execute binary container cachito steps.",
+    )
+    binary_container_cachito.set_defaults(func=task.binary_container_cachito)
+
+    binary_container_cachi2_init = tasks.add_parser(
+        "binary-container-cachi2-init",
+        help="binary container cachi2 init step",
+        description="Execute binary container cachi2 init step.",
+    )
+    binary_container_cachi2_init.set_defaults(func=task.binary_container_cachi2_init)
+
+    binary_container_cachi2_postprocess = tasks.add_parser(
+        "binary-container-cachi2-postprocess",
+        help="binary container cachi2 init step",
+        description="Execute binary container cachi2 postprocess step.",
+    )
+    binary_container_cachi2_postprocess.set_defaults(func=task.binary_container_cachi2_postprocess)
+
     binary_container_prebuild = tasks.add_parser(
         "binary-container-prebuild",
         help="binary container pre-build step",
         description="Execute binary container pre-build steps.",
     )
     binary_container_prebuild.set_defaults(func=task.binary_container_prebuild)
-    binary_container_prebuild.add_argument("--platforms-result", metavar="FILE", default=None,
-                                           help="file to write final platforms result")
 
     binary_container_build = tasks.add_parser(
         "binary-container-build",
