@@ -13,7 +13,7 @@ import shlex
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
-from shutil import copytree
+from shutil import copytree, ignore_patterns
 from typing import Any, Optional, List, Dict
 
 import reflink
@@ -279,8 +279,10 @@ class Cachi2PostprocessPlugin(Plugin):
                 "copy method used for cachi2 build_dir_injecting: %s", copy_method.__name__)
 
             copytree(
-                remote_source.sources_path, dest_dir,
-                symlinks=True, copy_function=copy_method, dirs_exist_ok=True)
+                remote_source.sources_path, dest_dir, symlinks=True,
+                # Specifically for "remote-source.tar.gz"
+                ignore=ignore_patterns('*.tar.gz', '*.tgz'),
+                copy_function=copy_method, dirs_exist_ok=True)
 
             # Create cachito.env file with environment variables received from cachito request
             self.generate_cachito_env_file(dest_dir, remote_source.build_args)
